@@ -1,9 +1,9 @@
 import numpy as np
 import cvxpy as cp
+from numpy import ndarray
 
 
-
-def solveIK(anchor_arr, target_start_T, target_end_T, traj_dis, scale_ratio=None) -> None:
+def solveIK(anchor_arr, target_start_T, target_end_T, traj_dis, scale_ratio=None) -> ndarray | None:
     """
     Constrained first anchor (starting point or idx=0) to be the translation part of target_start_T
     Constrained last anchor (end point or idx=-1) to be the translation part of target_end_T

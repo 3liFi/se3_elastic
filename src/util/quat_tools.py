@@ -248,18 +248,24 @@ def riem_exp(x, v):
             return x
 
         y = x * np.cos(v_norm) + v / v_norm * np.sin(v_norm)
-    
+
     else:
         v_norm = np.linalg.norm(v, axis=1, keepdims=True)
 
-        y = np.tile(x, (v_norm.shape[0], 1)) * np.tile(np.cos(v_norm), (1,4)) + v / np.tile(v_norm / np.sin(v_norm), (1,4)) 
+        x_batch = np.tile(x, (v_norm.shape[0], 1))
 
+        y = x_batch * np.cos(v_norm)
 
-    # # Find rows containing NaN values
-    # nan_rows = np.isnan(y).all(axis=1)
+        nonzero = v_norm[:, 0] > 1e-12
 
-    # # Replace NaN rows with zero vectors
-    # y[nan_rows, :] = np.zeros((1, 4))
+        # normal case
+        y[nonzero] += (
+            v[nonzero] /
+            (v_norm[nonzero] / np.sin(v_norm[nonzero]))
+        )
+
+        # zero tangent vector: exp(0)=identity
+        y[~nonzero] = x
 
     return y
 
